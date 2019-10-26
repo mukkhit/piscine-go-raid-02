@@ -7,13 +7,11 @@ func main() {
 	args := []string{"main", ".96.4...1", "1...6...4", "5.481.39.", "..795..43", ".3..8....", "4.5.23.18", ".1.63..59", ".59.7.83.", "..359...7"}
 	var massive [9][9][11]rune
 	//vvod parametrov
-	neizvestno := 0
 	for y := 1; y <= 9; y++ {
 		slovo := args[y] //".96.4...1"
 		for x := range slovo {
 			massive[y-1][x][0] = rune(slovo[x])
 			if rune(slovo[x]) == '.' {
-				neizvestno++
 				num := 1
 				for z := '1'; z <= '9'; z++ {
 					massive[y-1][x][num] = z
@@ -23,14 +21,62 @@ func main() {
 			}
 		}
 	}
+	massive2 := massive
+	z01.PrintRune(10)
+	for y := 0; y <= 8; y++ {
+		for x := 0; x <= 8; x++ {
+			z01.PrintRune(massive2[y][x][0])
+		}
+		z01.PrintRune(':')
+		for x := 0; x <= 8; x++ {
+			for z := 1; z <= 10; z++ {
+				z01.PrintRune(massive2[y][x][z])
+			}
+			z01.PrintRune(' ')
+		}
+		z01.PrintRune('\n')
+	}
 	//poisk resheniya
-	massive2 := possible(massive)
-	for i := 1; i <= 10000000000; i++ {
-		if massive2[8][8][8] == '!' {
-			massive2 = possible(massive2)
-		} else {
-			massive2 = massive2
-			break
+	//massive2 = possible1(massive)
+	//neizvestno:=1
+	for i := 1; neizvestno > 0; i++ {
+		massive2 = possible2(massive2)
+		z01.PrintRune(10)
+		for y := 0; y <= 8; y++ {
+			for x := 0; x <= 8; x++ {
+				z01.PrintRune(massive2[y][x][0])
+			}
+			z01.PrintRune(':')
+			for x := 0; x <= 8; x++ {
+				for z := 1; z <= 10; z++ {
+					z01.PrintRune(massive2[y][x][z])
+				}
+				z01.PrintRune(' ')
+			}
+			z01.PrintRune('\n')
+		}
+		massive2 = possible1(massive2)
+		z01.PrintRune(10)
+		for y := 0; y <= 8; y++ {
+			for x := 0; x <= 8; x++ {
+				z01.PrintRune(massive2[y][x][0])
+			}
+			z01.PrintRune(':')
+			for x := 0; x <= 8; x++ {
+				for z := 1; z <= 10; z++ {
+					z01.PrintRune(massive2[y][x][z])
+				}
+				z01.PrintRune(' ')
+			}
+			z01.PrintRune('\n')
+		}
+		neizvestno := 0
+		for y := 0; y <= 8; y++ {
+			for x := 0; x <= 8; x++ {
+				if massive[y][x][0] == '.' {
+					neizvestno++
+				}
+			}
 		}
 	}
 	//massive2 = possible(massive2)
@@ -53,19 +99,16 @@ func main() {
 	}
 }
 
-func possible(massive [9][9][11]rune) [9][9][11]rune {
+func possible1(massive [9][9][11]rune) [9][9][11]rune {
 	var massive2 [9][9][11]rune
 	massive2 = massive
 	nashli := false
-	row := [9][2]rune{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	//var column[89]rune
-	//var square[89]rune
 	//z01.PrintRune('\n')
-	if massive2[8][8][8] == '!' {
-		z01.PrintRune(massive2[8][8][8])
-		massive2[8][8][8] = '.'
-		z01.PrintRune(massive2[8][8][8])
-	}
+	//if massive2[0][0][8] == '!' {
+	//	z01.PrintRune(massive2[0][0][8])
+	//	massive2[0][0][8] = '.'
+	//	z01.PrintRune(massive2[0][0][8])
+	//}
 	for y := 0; y <= 8; y++ {
 		for x := 0; x <= 8; x++ {
 			for ryad := 0; ryad <= 8; ryad++ { //idu po ryadu - isklychayu cifry ryada
@@ -105,6 +148,8 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 				for z := 1; z <= 9; z++ {
 					if massive2[y][x][z] != '.' {
 						massive2[y][x][0] = massive2[y][x][z]
+						massive2[y][x][z] = '.'
+						massive2[y][x][10] = '.'
 						nashli = true
 						break
 					}
@@ -115,24 +160,57 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 			}
 		}
 		if nashli == true {
-			massive2[8][8][8] = '!'
+			//massive2[0][0][8] = '!'
 			return massive2
 		}
 	}
+	return massive2
+}
+
+func possible2(massive [9][9][11]rune) [9][9][11]rune {
+
 	//-----------------cifry unikalnye
-	xx := 0
+	massive2 := massive
+	nashli := false
+	nashli = nashli
+	var numbers [2][9]rune
+	var stolbec [9]int
 	for y := 0; y <= 8; y++ {
+		numbers = [2][9]rune{
+			{'1', '2', '3', '4', '5', '6', '7', '8', '9'},
+			{'0', '0', '0', '0', '0', '0', '0', '0', '0'},
+		}
+		stolbec = [9]int{0, 0, 0, 0, 0, 0, 0, 0, 0}
 		for x := 0; x <= 8; x++ {
-			for z := 1; z <= 9; z++ {
-				if massive2[y][x][z] != '.' {
-					row[xx] = massive2[y][x][z]
-					xx++
+			if massive2[y][x][0] == '.' {
+				for z := 1; z <= 9; z++ {
+					if massive2[y][x][z] != '.' {
+						for n := 0; n <= 8; n++ {
+							if massive2[y][x][z] == numbers[0][n] {
+								numbers[1][n]++ //kolichestvo cifr
+								stolbec[n] = x  //stolbec yacheiki
+							}
+						}
+					} //if not .
+				}
+			} //if z not nil
+		}
+		/*for i := 0; i < 9; i++ {
+			z01.PrintRune(numbers[0][i])
+			z01.PrintRune('=')
+			z01.PrintRune(numbers[1][i])
+			z01.PrintRune(';')
+		}*/
+		for n := 0; n <= 8; n++ {
+			if numbers[1][n] == '1' {
+				massive2[y][stolbec[n]][0] = numbers[0][n]
+				nashli = true
+				//massive2[0][0][8] = '!'
+				for z := 1; z <= 10; z++ {
+					massive2[y][stolbec[n]][z] = '.'
 				}
 			}
-			row[xx] = ' ' //27 27 26
-
 		}
-
 	}
 	return massive2
 }
