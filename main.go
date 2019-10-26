@@ -7,7 +7,6 @@ func main() {
 	args := []string{"main", ".96.4...1", "1...6...4", "5.481.39.", "..795..43", ".3..8....", "4.5.23.18", ".1.63..59", ".59.7.83.", "..359...7"}
 	var massive [9][9][11]rune
 	//vvod parametrov
-	var perv rune
 	neizvestno := 0
 	for y := 1; y <= 9; y++ {
 		slovo := args[y] //".96.4...1"
@@ -26,19 +25,14 @@ func main() {
 	}
 	//poisk resheniya
 	massive2 := possible(massive)
-
-	/*
-		for y := 0; y <= 8; y++ {
-			for x:=0; x<=8;x++{
-				if massive[y][x][0]=='.'{
-					for z := '1'; z <= '9'; z++ {
-						massive[y][x][0] = z
-						break
-					}
-				}
-			}
+	for i := 1; i <= 10000000000; i++ {
+		if massive2[8][8][8] == '!' {
+			massive2 = possible(massive2)
+		} else {
+			massive2 = massive2
+			break
 		}
-	*/
+	}
 	// print massive
 	for y := 0; y <= 8; y++ {
 		for x := 0; x <= 8; x++ {
@@ -52,6 +46,9 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 	var massive2 [9][9][11]rune
 	massive2 = massive
 	nashli := false
+	if massive2[8][8][8] == '!' {
+		massive2[8][8][8] = '.'
+	}
 	for y := 0; y <= 8; y++ {
 		for x := 0; x <= 8; x++ {
 			//v pervoi yacheike
