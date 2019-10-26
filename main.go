@@ -1,6 +1,6 @@
 package main
 
-//import "fmt"
+import "fmt"
 import "github.com/01-edu/z01"
 
 func main() {
@@ -38,46 +38,82 @@ func main() {
 	}
 	//poisk resheniya
 	//massive2 = possible1(massive)
-	//neizvestno:=1
-	for i := 1; neizvestno > 0; i++ {
-		massive2 = possible2(massive2)
-		z01.PrintRune(10)
-		for y := 0; y <= 8; y++ {
-			for x := 0; x <= 8; x++ {
-				z01.PrintRune(massive2[y][x][0])
-			}
-			z01.PrintRune(':')
-			for x := 0; x <= 8; x++ {
-				for z := 1; z <= 10; z++ {
-					z01.PrintRune(massive2[y][x][z])
+	//neizvestno := 1
+	/*
+		for i := 1; i <= 5; i++ {
+			//if neizvestno > 0 {
+			massive2 = possible1(massive2)
+			z01.PrintRune(10)
+			for y := 0; y <= 8; y++ {
+				for x := 0; x <= 8; x++ {
+					z01.PrintRune(massive2[y][x][0])
 				}
-				z01.PrintRune(' ')
-			}
-			z01.PrintRune('\n')
-		}
-		massive2 = possible1(massive2)
-		z01.PrintRune(10)
-		for y := 0; y <= 8; y++ {
-			for x := 0; x <= 8; x++ {
-				z01.PrintRune(massive2[y][x][0])
-			}
-			z01.PrintRune(':')
-			for x := 0; x <= 8; x++ {
-				for z := 1; z <= 10; z++ {
-					z01.PrintRune(massive2[y][x][z])
+				z01.PrintRune(':')
+				for x := 0; x <= 8; x++ {
+					for z := 1; z <= 10; z++ {
+						z01.PrintRune(massive2[y][x][z])
+					}
+					z01.PrintRune(' ')
 				}
-				z01.PrintRune(' ')
+				z01.PrintRune('\n')
 			}
-			z01.PrintRune('\n')
-		}
-		neizvestno := 0
+		}*/
+	massive3 = possible1(massive2)
+	for i := 1; i <= 3; i++ {
+		for ii := 1; ii <= 20; ii++ {
+			if massive3 != massive2 {
+				massive2 = massive3
+				massive3 = possible1(massive2)
+				z01.PrintRune(10)
+				for y := 0; y <= 8; y++ {
+					for x := 0; x <= 8; x++ {
+						z01.PrintRune(massive2[y][x][0])
+					}
+					z01.PrintRune(':')
+					for x := 0; x <= 8; x++ {
+						for z := 1; z <= 10; z++ {
+							z01.PrintRune(massive2[y][x][z])
+						}
+						z01.PrintRune(' ')
+					}
+					z01.PrintRune('\n')
+				}
+			} //if byli izmeneniya
+		} //for possible1
+		massive3 = possible2(massive2)
+		for ii := 1; ii <= 20; ii++ {
+			if massive3 != massive2 {
+				massive2 = massive3
+				massive3 = possible2(massive2)
+				z01.PrintRune(10)
+				for y := 0; y <= 8; y++ {
+					for x := 0; x <= 8; x++ {
+						z01.PrintRune(massive2[y][x][0])
+					}
+					z01.PrintRune(':')
+					for x := 0; x <= 8; x++ {
+						for z := 1; z <= 10; z++ {
+							z01.PrintRune(massive2[y][x][z])
+						}
+						z01.PrintRune(' ')
+					}
+					z01.PrintRune('\n')
+				}
+			}
+		} // for possible2
+		/*neizvestno = 0
 		for y := 0; y <= 8; y++ {
 			for x := 0; x <= 8; x++ {
 				if massive[y][x][0] == '.' {
+					z01.PrintRune('^')
+					z01.PrintRune(massive[y][x][0])
+					z01.PrintRune('^')
 					neizvestno++
 				}
 			}
-		}
+		} */
+		//fmt.Printf("neizvestno = %v\n", neizvestno)
+		//} //if neizv>0
 	}
 	//massive2 = possible(massive2)
 	//massive2 = possible(massive2)
@@ -195,12 +231,13 @@ func possible2(massive [9][9][11]rune) [9][9][11]rune {
 				}
 			} //if z not nil
 		}
-		/*for i := 0; i < 9; i++ {
+		for i := 0; i < 9; i++ {
 			z01.PrintRune(numbers[0][i])
 			z01.PrintRune('=')
 			z01.PrintRune(numbers[1][i])
 			z01.PrintRune(';')
-		}*/
+			fmt.Printf(" stolbec- %v ", stolbec[i])
+		}
 		for n := 0; n <= 8; n++ {
 			if numbers[1][n] == '1' {
 				massive2[y][stolbec[n]][0] = numbers[0][n]
