@@ -14,13 +14,13 @@ func main() {
 			massive[y-1][x][0] = rune(slovo[x])
 			if rune(slovo[x]) == '.' {
 				neizvestno++
+				num := 1
+				for z := '1'; z <= '9'; z++ {
+					massive[y-1][x][num] = z
+					num++
+				}
+				massive[y-1][x][10] = '9'
 			}
-			num := 1
-			for z := '1'; z <= '9'; z++ {
-				massive[y-1][x][num] = z
-				num++
-			}
-			massive[y-1][x][10] = '9'
 		}
 	}
 	//poisk resheniya
@@ -33,10 +33,21 @@ func main() {
 			break
 		}
 	}
+	//massive2 = possible(massive2)
+	//massive2 = possible(massive2)
 	// print massive
+	//massive2:=massive
+	z01.PrintRune(10)
 	for y := 0; y <= 8; y++ {
 		for x := 0; x <= 8; x++ {
 			z01.PrintRune(massive2[y][x][0])
+		}
+		z01.PrintRune(':')
+		for x := 0; x <= 8; x++ {
+			for z := 1; z <= 10; z++ {
+				z01.PrintRune(massive2[y][x][z])
+			}
+			z01.PrintRune(' ')
 		}
 		z01.PrintRune('\n')
 	}
@@ -46,15 +57,20 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 	var massive2 [9][9][11]rune
 	massive2 = massive
 	nashli := false
+	row := [9][2]rune{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	//var column[89]rune
+	//var square[89]rune
+	//z01.PrintRune('\n')
 	if massive2[8][8][8] == '!' {
+		z01.PrintRune(massive2[8][8][8])
 		massive2[8][8][8] = '.'
+		z01.PrintRune(massive2[8][8][8])
 	}
 	for y := 0; y <= 8; y++ {
 		for x := 0; x <= 8; x++ {
-			//v pervoi yacheike
 			for ryad := 0; ryad <= 8; ryad++ { //idu po ryadu - isklychayu cifry ryada
 				if massive2[y][ryad][0] != '.' { //0  0
-					for z := 0; z <= 8; z++ {
+					for z := 1; z <= 9; z++ {
 						if massive2[y][x][z] == massive2[y][ryad][0] {
 							massive2[y][x][z] = '.'
 							massive2[y][x][10]-- //8
@@ -64,7 +80,7 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 			} //for ryad
 			for col := 0; col <= 8; col++ { //idu po stolbcu - isklychayu cifry stolbca
 				if massive2[col][x][0] != '.' { //0  0
-					for z := 0; z <= 8; z++ {
+					for z := 1; z <= 9; z++ {
 						if massive2[y][x][z] == massive2[col][x][0] {
 							massive2[y][x][z] = '.'
 							massive2[y][x][10]-- //8
@@ -72,15 +88,10 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 					}
 				} //if not .
 			} //for col
-			/*if y<=2 &&x<=2{
-				//2/3=0     4 0 - naoborot         |8  8
-				sq1:=0  //4/3  4/3*3                 |8/3 = 2*3
-				sq2:=0   //   0/3*3                |8/3 = 2*3
-			}*/
 			for square1 := (y / 3) * 3; square1 <= (y/3)*3+2; square1++ { //idu po square - isklychayu cifry square
 				for square2 := (x / 3) * 3; square2 <= (x/3)*3+2; square2++ {
 					if massive2[square1][square2][0] != '.' { //0  0
-						for z := 0; z <= 8; z++ {
+						for z := 1; z <= 9; z++ {
 							if massive2[y][x][z] == massive2[square1][square2][0] {
 								massive2[y][x][z] = '.'
 								massive2[y][x][10]-- //8
@@ -91,7 +102,7 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 			} //for square1
 			//my ubrali vse nevozmojnye znachenia
 			if massive2[y][x][10] == '1' {
-				for z := 0; z <= 8; z++ {
+				for z := 1; z <= 9; z++ {
 					if massive2[y][x][z] != '.' {
 						massive2[y][x][0] = massive2[y][x][z]
 						nashli = true
@@ -105,8 +116,23 @@ func possible(massive [9][9][11]rune) [9][9][11]rune {
 		}
 		if nashli == true {
 			massive2[8][8][8] = '!'
-			break
+			return massive2
 		}
+	}
+	//-----------------cifry unikalnye
+	xx := 0
+	for y := 0; y <= 8; y++ {
+		for x := 0; x <= 8; x++ {
+			for z := 1; z <= 9; z++ {
+				if massive2[y][x][z] != '.' {
+					row[xx] = massive2[y][x][z]
+					xx++
+				}
+			}
+			row[xx] = ' ' //27 27 26
+
+		}
+
 	}
 	return massive2
 }
