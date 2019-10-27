@@ -58,6 +58,31 @@ func SolveSud(result *[9][9]int) bool {
 	return false
 }
 
+func SolveSudRev(result *[9][9]int) bool {
+	if !HasEmptyCell(*result) {
+		return true
+	}
+	for i := 0; i < 9; i++ {
+		for j := 0; j < 9; j++ {
+			if result[i][j] == 0 {
+				for k := 9; k >= 1; k-- {
+					result[i][j] = k
+					if IsValidSud(*result) {
+						if SolveSud(result) {
+							return true
+						}
+						result[i][j] = 0
+					} else {
+						result[i][j] = 0
+					}
+				}
+				return false
+			}
+		}
+	}
+	return false
+}
+
 func HasEmptyCell(result [9][9]int) bool {
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
@@ -116,24 +141,27 @@ func IsValidSud(result [9][9]int) bool {
 func main() {
 	args := os.Args
 	lenArgs := len(args)
-	if lenArgs != 10 {
-		fmt.Println("Error")
-	} else {
+	if lenArgs == 10 {
 		var result [9][9]int
 		if ParseArgs(args, &result) {
+			resultRev := result
 			if SolveSud(&result) {
-				for i := 0; i < 9; i++ {
-					for j := 0; j < 9; j++ {
-						fmt.Print(result[i][j])
-						if j != 8 {
-							fmt.Print(" ")
+				if SolveSudRev(&resultRev) {
+					if resultRev == result {
+						for i := 0; i < 9; i++ {
+							for j := 0; j < 9; j++ {
+								fmt.Print(result[i][j])
+								if j != 8 {
+									fmt.Print(" ")
+								}
+							}
+							fmt.Println()
 						}
+						return
 					}
-					fmt.Println()
 				}
 			}
-		} else {
-			fmt.Println("Error")
 		}
 	}
+	fmt.Println("Error")
 }
