@@ -1,253 +1,178 @@
 package main
 
-import "fmt"
-import "github.com/01-edu/z01"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	args := []string{"main", ".96.4...1", "1...6...4", "5.481.39.", "..795..43", ".3..8....", "4.5.23.18", ".1.63..59", ".59.7.83.", "..359...7"}
-	var massive [9][9][11]rune
-	//vvod parametrov
-	for y := 1; y <= 9; y++ {
-		slovo := args[y] //".96.4...1"
-		for x := range slovo {
-			massive[y-1][x][0] = rune(slovo[x])
-			if rune(slovo[x]) == '.' {
-				num := 1
-				for z := '1'; z <= '9'; z++ {
-					massive[y-1][x][num] = z
-					num++
+	args := os.Args
+	lenArgs := len(args)
+	if lenArgs != 10 {
+		fmt.Println("Error")
+	} else {
+		var result [9][9]int
+		if ParseArgs(args, &result) {
+			for i := 0; i < 9; i++ {
+				for j := 0; j < 9; j++ {
+					fmt.Print(result[i][j])
+					fmt.Print(" ")
 				}
-				massive[y-1][x][10] = '9'
+				fmt.Println()
 			}
+		} else {
+			fmt.Println("Error")
 		}
-	}
-	massive2 := massive
-	z01.PrintRune(10)
-	for y := 0; y <= 8; y++ {
-		for x := 0; x <= 8; x++ {
-			z01.PrintRune(massive2[y][x][0])
-		}
-		z01.PrintRune(':')
-		for x := 0; x <= 8; x++ {
-			for z := 1; z <= 10; z++ {
-				z01.PrintRune(massive2[y][x][z])
-			}
-			z01.PrintRune(' ')
-		}
-		z01.PrintRune('\n')
-	}
-	//poisk resheniya
-	//massive2 = possible1(massive)
-	//neizvestno := 1
-	/*
-		for i := 1; i <= 5; i++ {
-			//if neizvestno > 0 {
-			massive2 = possible1(massive2)
-			z01.PrintRune(10)
-			for y := 0; y <= 8; y++ {
-				for x := 0; x <= 8; x++ {
-					z01.PrintRune(massive2[y][x][0])
-				}
-				z01.PrintRune(':')
-				for x := 0; x <= 8; x++ {
-					for z := 1; z <= 10; z++ {
-						z01.PrintRune(massive2[y][x][z])
-					}
-					z01.PrintRune(' ')
-				}
-				z01.PrintRune('\n')
-			}
-		}*/
-	massive3 = possible1(massive2)
-	for i := 1; i <= 3; i++ {
-		for ii := 1; ii <= 20; ii++ {
-			if massive3 != massive2 {
-				massive2 = massive3
-				massive3 = possible1(massive2)
-				z01.PrintRune(10)
-				for y := 0; y <= 8; y++ {
-					for x := 0; x <= 8; x++ {
-						z01.PrintRune(massive2[y][x][0])
-					}
-					z01.PrintRune(':')
-					for x := 0; x <= 8; x++ {
-						for z := 1; z <= 10; z++ {
-							z01.PrintRune(massive2[y][x][z])
-						}
-						z01.PrintRune(' ')
-					}
-					z01.PrintRune('\n')
-				}
-			} //if byli izmeneniya
-		} //for possible1
-		massive3 = possible2(massive2)
-		for ii := 1; ii <= 20; ii++ {
-			if massive3 != massive2 {
-				massive2 = massive3
-				massive3 = possible2(massive2)
-				z01.PrintRune(10)
-				for y := 0; y <= 8; y++ {
-					for x := 0; x <= 8; x++ {
-						z01.PrintRune(massive2[y][x][0])
-					}
-					z01.PrintRune(':')
-					for x := 0; x <= 8; x++ {
-						for z := 1; z <= 10; z++ {
-							z01.PrintRune(massive2[y][x][z])
-						}
-						z01.PrintRune(' ')
-					}
-					z01.PrintRune('\n')
-				}
-			}
-		} // for possible2
-		/*neizvestno = 0
-		for y := 0; y <= 8; y++ {
-			for x := 0; x <= 8; x++ {
-				if massive[y][x][0] == '.' {
-					z01.PrintRune('^')
-					z01.PrintRune(massive[y][x][0])
-					z01.PrintRune('^')
-					neizvestno++
-				}
-			}
-		} */
-		//fmt.Printf("neizvestno = %v\n", neizvestno)
-		//} //if neizv>0
-	}
-	//massive2 = possible(massive2)
-	//massive2 = possible(massive2)
-	// print massive
-	//massive2:=massive
-	z01.PrintRune(10)
-	for y := 0; y <= 8; y++ {
-		for x := 0; x <= 8; x++ {
-			z01.PrintRune(massive2[y][x][0])
-		}
-		z01.PrintRune(':')
-		for x := 0; x <= 8; x++ {
-			for z := 1; z <= 10; z++ {
-				z01.PrintRune(massive2[y][x][z])
-			}
-			z01.PrintRune(' ')
-		}
-		z01.PrintRune('\n')
 	}
 }
 
-func possible1(massive [9][9][11]rune) [9][9][11]rune {
-	var massive2 [9][9][11]rune
-	massive2 = massive
-	nashli := false
-	//z01.PrintRune('\n')
-	//if massive2[0][0][8] == '!' {
-	//	z01.PrintRune(massive2[0][0][8])
-	//	massive2[0][0][8] = '.'
-	//	z01.PrintRune(massive2[0][0][8])
-	//}
-	for y := 0; y <= 8; y++ {
-		for x := 0; x <= 8; x++ {
-			for ryad := 0; ryad <= 8; ryad++ { //idu po ryadu - isklychayu cifry ryada
-				if massive2[y][ryad][0] != '.' { //0  0
-					for z := 1; z <= 9; z++ {
-						if massive2[y][x][z] == massive2[y][ryad][0] {
-							massive2[y][x][z] = '.'
-							massive2[y][x][10]-- //8
-						}
-					}
-				} //if not .
-			} //for ryad
-			for col := 0; col <= 8; col++ { //idu po stolbcu - isklychayu cifry stolbca
-				if massive2[col][x][0] != '.' { //0  0
-					for z := 1; z <= 9; z++ {
-						if massive2[y][x][z] == massive2[col][x][0] {
-							massive2[y][x][z] = '.'
-							massive2[y][x][10]-- //8
-						}
-					}
-				} //if not .
-			} //for col
-			for square1 := (y / 3) * 3; square1 <= (y/3)*3+2; square1++ { //idu po square - isklychayu cifry square
-				for square2 := (x / 3) * 3; square2 <= (x/3)*3+2; square2++ {
-					if massive2[square1][square2][0] != '.' { //0  0
-						for z := 1; z <= 9; z++ {
-							if massive2[y][x][z] == massive2[square1][square2][0] {
-								massive2[y][x][z] = '.'
-								massive2[y][x][10]-- //8
-							}
-						}
-					} //if not .
-				} //for square2
-			} //for square1
-			//my ubrali vse nevozmojnye znachenia
-			if massive2[y][x][10] == '1' {
-				for z := 1; z <= 9; z++ {
-					if massive2[y][x][z] != '.' {
-						massive2[y][x][0] = massive2[y][x][z]
-						massive2[y][x][z] = '.'
-						massive2[y][x][10] = '.'
-						nashli = true
-						break
+func ParseArgs(args []string, result *[9][9]int) bool {
+	for i := 1; i < len(args); i++ {
+		if len(args[i]) != 9 {
+			return false
+		} else {
+			if ValidArg(args[i]) {
+				for j := 0; j < 9; j++ {
+					if args[i][j] != '.' {
+						result[i-1][j] = int(args[i][j] - 48)
 					}
 				}
-			}
-			if nashli == true {
-				break
-			}
-		}
-		if nashli == true {
-			//massive2[0][0][8] = '!'
-			return massive2
-		}
-	}
-	return massive2
-}
-
-func possible2(massive [9][9][11]rune) [9][9][11]rune {
-
-	//-----------------cifry unikalnye
-	massive2 := massive
-	nashli := false
-	nashli = nashli
-	var numbers [2][9]rune
-	var stolbec [9]int
-	for y := 0; y <= 8; y++ {
-		numbers = [2][9]rune{
-			{'1', '2', '3', '4', '5', '6', '7', '8', '9'},
-			{'0', '0', '0', '0', '0', '0', '0', '0', '0'},
-		}
-		stolbec = [9]int{0, 0, 0, 0, 0, 0, 0, 0, 0}
-		for x := 0; x <= 8; x++ {
-			if massive2[y][x][0] == '.' {
-				for z := 1; z <= 9; z++ {
-					if massive2[y][x][z] != '.' {
-						for n := 0; n <= 8; n++ {
-							if massive2[y][x][z] == numbers[0][n] {
-								numbers[1][n]++ //kolichestvo cifr
-								stolbec[n] = x  //stolbec yacheiki
-							}
-						}
-					} //if not .
-				}
-			} //if z not nil
-		}
-		for i := 0; i < 9; i++ {
-			z01.PrintRune(numbers[0][i])
-			z01.PrintRune('=')
-			z01.PrintRune(numbers[1][i])
-			z01.PrintRune(';')
-			fmt.Printf(" stolbec- %v ", stolbec[i])
-		}
-		for n := 0; n <= 8; n++ {
-			if numbers[1][n] == '1' {
-				massive2[y][stolbec[n]][0] = numbers[0][n]
-				nashli = true
-				//massive2[0][0][8] = '!'
-				for z := 1; z <= 10; z++ {
-					massive2[y][stolbec[n]][z] = '.'
-				}
+			} else {
+				return false
 			}
 		}
 	}
-	return massive2
+	return true
 }
+
+func ValidArg(str string) bool {
+	for i := range str {
+		if !((str[i] >= '1' && str[i] <= '9') || str[i] == '.') {
+			return false
+		}
+	}
+	return true
+}
+
+// func parseInput(input string) [9][9]int {
+// 	board := [9][9]int{}
+// 	//vvod parametrov
+// 	for y := 1; y <= 9; y++ {
+// 		slovo := args[y] //".96.4...1"
+// 		for x := range slovo {
+// 			board[y-1][x][0] = rune(slovo[x])
+// 			if rune(slovo[x]) == '.' {
+// 				num := 1
+// 				for z := '1'; z <= '9'; z++ {
+// 					board[y-1][x][num] = z
+// 					num++
+// 				}
+// 				board[y-1][x][10] = '9'
+// 			}
+// 		}
+// 	}
+// 	/* massive2 := massive
+// 	z01.PrintRune(10)
+// 	for y := 0; y <= 8; y++ {
+// 		for x := 0; x <= 8; x++ {
+// 			z01.PrintRune(massive2[y][x][0])
+// 		}
+// 		z01.PrintRune(':')
+// 		for x := 0; x <= 8; x++ {
+// 			for z := 1; z <= 10; z++ {
+// 				z01.PrintRune(massive2[y][x][z])
+// 			}
+// 			z01.PrintRune(' ')
+// 		}
+// 		z01.PrintRune('\n')
+// 	} */
+// 	return board
+// }
+
+// func isBoardValid(board *[9][9]int) bool {
+
+// 	//check duplicates by row
+// 	for row := 0; row < 9; row++ {
+// 		counter := [10]int{}
+// 		for col := 0; col < 9; col++ {
+// 			counter[board[row][col]]++
+// 		}
+// 		if hasDuplicates(counter) {
+// 			return false
+// 		}
+// 	}
+
+// 	//check duplicates by column
+// 	for row := 0; row < 9; row++ {
+// 		counter := [10]int{}
+// 		for col := 0; col < 9; col++ {
+// 			counter[board[col][row]]++
+// 		}
+// 		if hasDuplicates(counter) {
+// 			return false
+// 		}
+// 	}
+
+// 	//check 3x3 section
+// 	for i := 0; i < 9; i += 3 {
+// 		for j := 0; j < 9; j += 3 {
+// 			counter := [10]int{}
+// 			for row := i; row < i+3; row++ {
+// 				for col := j; col < j+3; col++ {
+// 					counter[board[row][col]]++
+// 				}
+// 				if hasDuplicates(counter) {
+// 					return false
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return true
+// }
+
+// func backtrack(board *[9][9]int) bool {
+// 	if !hasEmptyCell(board) {
+// 		return true
+// 	}
+// 	for i := 0; i < 9; i++ {
+// 		for j := 0; j < 9; j++ {
+// 			if board[i][j] == 0 {
+// 				for candidate := 9; candidate >= 1; candidate-- {
+// 					board[i][j] = candidate
+// 					if isBoardValid(board) {
+// 						if backtrack(board) {
+// 							return true
+// 						}
+// 						board[i][j] = 0
+// 					} else {
+// 						board[i][j] = 0
+// 					}
+// 				}
+// 				return false
+// 			}
+// 		}
+// 	}
+// 	return false
+// }
+
+// func printBoard(board [9][9]int) {
+// 	fmt.Println("+-------+-------+-------+")
+// 	for row := 0; row < 9; row++ {
+// 		fmt.Print("| ")
+// 		for col := 0; col < 9; col++ {
+// 			if col == 3 || col == 6 {
+// 				fmt.Print("| ")
+// 			}
+// 			fmt.Printf("%d ", board[row][col])
+// 			if col == 8 {
+// 				fmt.Print("|")
+// 			}
+// 		}
+// 		if row == 2 || row == 5 || row == 8 {
+// 			fmt.Println("\n+-------+-------+-------+")
+// 		} else {
+// 			fmt.Println()
+// 		}
+// 	}
+// }
